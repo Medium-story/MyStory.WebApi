@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Reaction> Reactions { get; set; }
     public DbSet<Reply> Replies { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<Follow> Follows { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -39,7 +40,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     private void ConfigureFollow(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follow>()
-        .HasKey(f => f.FollowId);
+        .HasKey(f => f.Id);
 
         modelBuilder.Entity<Follow>()
             .HasOne(f => f.FollowerUser)

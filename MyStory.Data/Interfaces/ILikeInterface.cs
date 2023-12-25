@@ -1,5 +1,7 @@
-﻿namespace MyStory.Data.Interfaces;
+﻿using MediumStory.Domain.Entities;
 
-public interface ILikeInterface
+namespace MyStory.Data.Interfaces;
+
+public interface ILikeInterface : IRepository<Like>
 {
 }

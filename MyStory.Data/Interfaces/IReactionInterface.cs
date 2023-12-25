@@ -1,5 +1,7 @@
-﻿namespace MyStory.Data.Interfaces;
+﻿using MediumStory.Domain.Entities;
 
-public interface IReactionInterface
+namespace MyStory.Data.Interfaces;
+
+public interface IReactionInterface : IRepository<Reaction>
 {
 }

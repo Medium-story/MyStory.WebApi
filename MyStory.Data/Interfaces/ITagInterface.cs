@@ -1,5 +1,7 @@
-﻿namespace MyStory.Data.Interfaces;
+﻿using MediumStory.Domain.Entities;
 
-public interface ITagInterface
+namespace MyStory.Data.Interfaces;
+
+public interface ITagInterface : IRepository<Tag>
 {
 }

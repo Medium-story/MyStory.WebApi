@@ -1,5 +1,7 @@
-﻿namespace MyStory.Data.Interfaces;
+﻿using MediumStory.Domain.Entities;
 
-public interface ICommentInterface
+namespace MyStory.Data.Interfaces;
+
+public interface ICommentInterface : IRepository<Comment>
 {
 }

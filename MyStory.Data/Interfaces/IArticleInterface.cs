@@ -1,5 +1,7 @@
-﻿namespace MyStory.Data.Interfaces;
+﻿using MediumStory.Domain.Entities;
 
-public interface IArticleInterface
+namespace MyStory.Data.Interfaces;
+
+public interface IArticleInterface : IRepository<Article>
 {
 }
