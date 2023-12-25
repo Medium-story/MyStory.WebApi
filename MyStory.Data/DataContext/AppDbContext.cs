@@ -6,26 +6,35 @@ namespace MediumStory.Data.DataContext;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User>(options)
 {
-    //public DbSet<Article> Articles { get; set; }
-    //public DbSet<Article> Savedes { get; set; }
-    //public DbSet<Comment> Comments { get; set; }
-    //public DbSet<Like> Likes { get; set; }
-    //public DbSet<Reaction> Reactions { get; set; }
-    //public DbSet<Reply> Replies { get; set; }
-    //public DbSet<Tag> Tags { get; set; }
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Article> Savedes { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Like> Likes { get; set; }
+    public DbSet<Reaction> Reactions { get; set; }
+    public DbSet<Reply> Replies { get; set; }
+    public DbSet<Tag> Tags { get; set; }
 
 
-    //protected override void OnModelCreating(ModelBuilder builder)
-    //{
-    //    ConfigureArticle(builder);
-    //    ConfigureComment(builder);
-    //    ConfigureReply(builder);
-    //    ConfigureFollow(builder);
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        ConfigureArticle(builder);
+        ConfigureComment(builder);
+        ConfigureReply(builder);
+        ConfigureFollow(builder);
+        ConfigureUser(builder);
 
 
-    //    base.OnModelCreating(builder);
-    //}
+        base.OnModelCreating(builder);
+    }
 
+    private void ConfigureUser(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+                    .HasMany(i => i.Articles)
+                    .WithOne(a => a.User)
+                    .HasForeignKey(f => f.UserId)
+                    .OnDelete(DeleteBehavior.ClientCascade);
+    }
 
     private void ConfigureFollow(ModelBuilder modelBuilder)
     {
@@ -64,6 +73,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                     .WithOne(i => i.Article)
                     .HasForeignKey(i => i.ArticleId)
                     .OnDelete(DeleteBehavior.ClientCascade);
+
+        modelBuilder.Entity<Article>()
+                    .HasMany(a => a.Users)
+                    .WithMany(u => u.Saved)
+                    .UsingEntity(c => c.ToTable("SavedArticles"));
+
     }
 
     private void ConfigureComment(ModelBuilder modelBuilder)
