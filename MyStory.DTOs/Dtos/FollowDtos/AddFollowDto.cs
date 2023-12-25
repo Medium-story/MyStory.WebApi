@@ -1,6 +1,6 @@
 ﻿using MyStory.DTOs.Dtos;
 
-namespace MyStory.DTOs.FollwDtos;
+namespace MyStory.DTOs.Dtos.FollowDtos;
 
 public class AddFollowDto : BaseDto
 {
