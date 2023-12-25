@@ -12,6 +12,7 @@ public class User : IdentityUser
     public string GitHub { get; set; } = string.Empty;
     public virtual ICollection<Reaction> Reactions { get; set; } = new List<Reaction>();
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public virtual ICollection<Reply> Replies { get; set; } = new List<Reply>();
     public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
     public virtual ICollection<Like> Like { get; set; } = new List<Like>();
     public virtual ICollection<Article> Saved { get; set; } = new List<Article>();
