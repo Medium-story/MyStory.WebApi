@@ -1,10 +1,11 @@
-﻿using MyStory.Service.Interfaces;
+﻿using MyStory.DTOs.Dtos.TagDtos;
+using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
 
 public class TagService : ITagService
 {
-    public Task CreateAsync(AddtagDto articleDto)
+    public Task CreateAsync(AddTagDto articleDto)
     {
         throw new NotImplementedException();
     }

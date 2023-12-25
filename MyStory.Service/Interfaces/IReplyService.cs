@@ -1,4 +1,6 @@
-﻿namespace MyStory.Service.Interfaces;
+﻿using MyStory.DTOs.Dtos.ReplyDtos;
+
+namespace MyStory.Service.Interfaces;
 
 public interface IReplyService
 {

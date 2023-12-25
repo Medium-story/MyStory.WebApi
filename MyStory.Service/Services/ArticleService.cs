@@ -1,4 +1,5 @@
 ﻿using MyStory.Data.Interfaces;
+using MyStory.DTOs.Dtos.ArticleDtos;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;

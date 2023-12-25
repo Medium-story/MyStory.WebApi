@@ -1,4 +1,6 @@
-﻿namespace MyStory.Service.Interfaces;
+﻿using MyStory.DTOs.Dtos.CommentDtos;
+
+namespace MyStory.Service.Interfaces;
 
 public interface ICommentService
 {

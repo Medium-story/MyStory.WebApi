@@ -1,4 +1,6 @@
-﻿namespace MyStory.Service.Interfaces;
+﻿using MyStory.DTOs.Dtos.ArticleDtos;
+
+namespace MyStory.Service.Interfaces;
 
 public interface IArticleService
 {

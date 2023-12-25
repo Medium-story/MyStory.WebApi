@@ -1,9 +1,11 @@
-﻿namespace MyStory.Service.Interfaces;
+﻿using MyStory.DTOs.Dtos.TagDtos;
+
+namespace MyStory.Service.Interfaces;
 
 public interface ITagService
 {
     Task<List<TagDto>> GetAllAsync();
-    Task CreateAsync(AddtagDto articleDto);
+    Task CreateAsync(AddTagDto articleDto);
     Task UpdateAsync(UpdateTagDto articleDto);
     Task DeleteAsync(int Id);
 }

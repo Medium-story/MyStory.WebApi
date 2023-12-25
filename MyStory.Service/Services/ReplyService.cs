@@ -1,4 +1,5 @@
-﻿using MyStory.Service.Interfaces;
+﻿using MyStory.DTOs.Dtos.ReplyDtos;
+using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
 
