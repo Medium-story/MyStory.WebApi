@@ -16,6 +16,7 @@ public class CommentService(IUnitOfWork unitOfWork,
 
     public async Task CreateAsync(AddCommentDto commentDto)
     {
+        // Karochi commit uchun
         var comment = _mapper.Map<Comment>(commentDto);
         comment.Article = null;
         await _unitOfWork.Comment.CreateAsync(comment);
