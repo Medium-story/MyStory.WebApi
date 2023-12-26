@@ -1,14 +1,25 @@
-﻿using MyStory.DTOs.Dtos.CommentDtos;
+﻿using AutoMapper;
+using MediumStory.Domain.Entities;
+using Microsoft.VisualBasic;
+using MyStory.Data.Interfaces;
+using MyStory.DTOs.Dtos.CommentDtos;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
 
-public class CommentService : ICommentService
+public class CommentService(IUnitOfWork unitOfWork,
+                            IMapper mapper) : ICommentService
 
 {
-    public Task CreateAsync(AddCommentDto commentDto)
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IMapper _mapper = mapper;
+
+    public async Task CreateAsync(AddCommentDto commentDto)
     {
-        throw new NotImplementedException();
+        var comment = _mapper.Map<Comment>(commentDto);
+        comment.Article = null;
+        await _unitOfWork.Comment.CreateAsync(comment);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public Task DeleteAsync(int Id)
@@ -16,9 +27,10 @@ public class CommentService : ICommentService
         throw new NotImplementedException();
     }
 
-    public Task<List<CommentDto>> GetAllAsync()
+    public async Task<List<CommentDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var comments = await _unitOfWork.Comment.GetAllWithReplies();
+        return comments.Select(i => _mapper.Map<CommentDto>(i)).ToList();
     }
 
     public Task<CommentDto> getByIdAsync(int Id)

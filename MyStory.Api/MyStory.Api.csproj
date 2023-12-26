@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,12 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MyStory.Data\MyStory.Data.csproj" />
     <ProjectReference Include="..\MyStory.Domain\MyStory.Domain.csproj" />
+    <ProjectReference Include="..\MyStory.DTOs\MyStory.DTOs.csproj" />
+    <ProjectReference Include="..\MyStory.Service\MyStory.Service.csproj" />
   </ItemGroup>
 
 </Project>
