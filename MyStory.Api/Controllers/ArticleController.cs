@@ -24,4 +24,18 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         var result = await articleService.GetAllAsync();
         return Ok(result);
     }
+
+    [HttpPut("update")]
+    public ActionResult Update(UpdateArticleDto updateArticle)
+    {
+        articleService.UpdateAsync(updateArticle);
+        return Ok();
+    }
+
+    [HttpDelete("delete")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await articleService.DeleteAsync(id);
+        return Ok();
+    }
 }

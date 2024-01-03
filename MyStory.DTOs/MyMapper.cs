@@ -2,6 +2,7 @@
 using MediumStory.Domain.Entities;
 using MyStory.DTOs.Dtos.ArticleDtos;
 using MyStory.DTOs.Dtos.CommentDtos;
+using MyStory.DTOs.Dtos.ReplyDtos;
 
 namespace MyStory.DTOs;
 
@@ -16,5 +17,9 @@ public class MyMapper : Profile
         CreateMap<AddCommentDto, Comment>();
         CreateMap<Comment, CommentDto>();
         CreateMap<UpdateCommentDto, Comment>();
+
+        CreateMap<AddReplyDto, Reply>();
+        CreateMap<Reply, ReplyDto>();
+        CreateMap<UpdateReplyDto, Reply>();
     }
 }

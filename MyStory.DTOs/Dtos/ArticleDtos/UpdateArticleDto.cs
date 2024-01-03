@@ -7,6 +7,5 @@ public class UpdateArticleDto : BaseDto
     public string Body { get; set; } = string.Empty;
     public string AverageReadTime => Math.Ceiling((decimal)(Body.Length / 300)).ToString();
     public string UserId { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
 
 }

@@ -1,11 +1,12 @@
 ﻿using MyStory.DTOs.Dtos.ArticleDtos;
+using MyStory.DTOs.Dtos.LikeDtos;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
 
 public class LikeService : ILikeService
 {
-    public Task CreateAsync(AddArticleDto articleDto)
+    public Task CreateAsync(AddLikeDto articleDto)
     {
         throw new NotImplementedException();
     }
@@ -15,7 +16,7 @@ public class LikeService : ILikeService
         throw new NotImplementedException();
     }
 
-    public Task<List<ArticleDto>> GetAllAsync()
+    public Task<List<LikeDto>> GetAllAsync()
     {
         throw new NotImplementedException();
     }

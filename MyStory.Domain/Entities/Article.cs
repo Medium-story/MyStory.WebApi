@@ -10,7 +10,6 @@ public class Article : BaseEntity
     public User User { get; set; } = new();
     public virtual ICollection<Reaction> Reactions { get; set; } = new List<Reaction>();
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public virtual ICollection<Reply> Replies { get; set; } = new List<Reply>();
     public virtual ICollection<User> Users { get; set; } = new List<User>();
     public DateTime CreatedAt { get; set; }
 }

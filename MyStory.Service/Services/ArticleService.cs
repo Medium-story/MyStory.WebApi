@@ -15,13 +15,16 @@ public class ArticleService(IUnitOfWork unitOfWork,
     public async Task CreateAsync(AddArticleDto articleDto)
     {
         var article = _mapper.Map<Article>(articleDto);
+        article.User = null;
         await _unitOfWork.Article.CreateAsync(article);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(int Id)
+    public async Task DeleteAsync(int Id)
     {
-        throw new NotImplementedException();
+        var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
+        _unitOfWork.Article.Delete(article);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<List<ArticleDto>> GetAllAsync()
@@ -31,13 +34,18 @@ public class ArticleService(IUnitOfWork unitOfWork,
         return articleDtos;
     }
 
-    public Task<ArticleDto> GetByIdAsync(int Id)
+    public async Task<ArticleDto> GetByIdAsync(int Id)
     {
-        throw new NotImplementedException();
+        var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
+        var articleDto = _mapper.Map<ArticleDto>(article);
+        return articleDto;
     }
 
-    public Task UpdateAsync(UpdateArticleDto articleDto)
+    public async Task UpdateAsync(UpdateArticleDto articleDto)
     {
-        throw new NotImplementedException();
+        var article = _mapper.Map<Article>(articleDto);
+        article.User = null;
+        _unitOfWork.Article.Update(article);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

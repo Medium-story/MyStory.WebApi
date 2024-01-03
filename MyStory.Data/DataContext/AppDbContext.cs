@@ -70,12 +70,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                     .OnDelete(DeleteBehavior.ClientCascade);
 
         modelBuilder.Entity<Article>()
-                    .HasMany(i => i.Replies)
-                    .WithOne(i => i.Article)
-                    .HasForeignKey(i => i.ArticleId)
-                    .OnDelete(DeleteBehavior.ClientCascade);
-
-        modelBuilder.Entity<Article>()
                     .HasMany(a => a.Users)
                     .WithMany(u => u.Saved)
                     .UsingEntity(c => c.ToTable("SavedArticles"));

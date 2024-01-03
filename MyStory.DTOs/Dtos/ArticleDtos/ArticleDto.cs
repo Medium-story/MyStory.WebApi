@@ -14,7 +14,6 @@ public class ArticleDto : BaseDto
     public string UserId { get; set; } = string.Empty;
     public virtual ICollection<ReactionDto> Reactions { get; set; } = new List<ReactionDto>();
     public virtual ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
-    public virtual ICollection<ReplyDto> Replies { get; set; } = new List<ReplyDto>();
     public virtual ICollection<UserDto> Users { get; set; } = new List<UserDto>();
     public DateTime CreatedAt { get; set; }
 

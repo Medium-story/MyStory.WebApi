@@ -6,6 +6,4 @@ public class UpdateReplyDto : BaseDto
     public int CommentId { get; set; }
     public string Content { get; set; } = string.Empty;
     public int ArticleId { get; set; }
-    public DateTime CreatedAt { get; set; }
-
 }

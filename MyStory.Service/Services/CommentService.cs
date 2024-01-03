@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediumStory.Domain.Entities;
-using Microsoft.VisualBasic;
 using MyStory.Data.Interfaces;
 using MyStory.DTOs.Dtos.CommentDtos;
 using MyStory.Service.Interfaces;
@@ -19,6 +18,7 @@ public class CommentService(IUnitOfWork unitOfWork,
         // Karochi commit uchun
         var comment = _mapper.Map<Comment>(commentDto);
         comment.Article = null;
+        comment.User = null;
         await _unitOfWork.Comment.CreateAsync(comment);
         await _unitOfWork.SaveChangesAsync();
     }

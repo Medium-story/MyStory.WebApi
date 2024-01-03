@@ -13,7 +13,20 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
     {
         var list = await _appDb.Articles
                                    .Include(i => i.Comments)
+                                   .ThenInclude(i => i.Replies)
+                                   .ThenInclude(i => i.Likes)
                                    .ToListAsync();
         return list;
+    }
+
+    public async Task<Article> GetByIdWithEntities(int id)
+    {
+        var article = await _appDb.Articles
+                                   .Include(i => i.Comments)
+                                   .ThenInclude(i => i.Replies)
+                                   .ThenInclude(i => i.Likes)
+                                   .FirstOrDefaultAsync(i => i.Id == id);
+
+        return article ?? new Article();
     }
 }
