@@ -1,6 +1,7 @@
 ﻿using MediumStory.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MyStory.Domain.Entities;
 
 namespace MediumStory.Data.DataContext;
 
@@ -9,7 +10,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Article> Articles { get; set; }
     public DbSet<Article> Savedes { get; set; }
     public DbSet<Comment> Comments { get; set; }
-    public DbSet<Like> Likes { get; set; }
+    public DbSet<Like> CommentLikes { get; set; }
+    public DbSet<ReplyLike> ReplyLikes { get; set; }
     public DbSet<Reaction> Reactions { get; set; }
     public DbSet<Reply> Replies { get; set; }
     public DbSet<Tag> Tags { get; set; }
@@ -82,21 +84,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                     .HasMany(i => i.Replies)
                     .WithOne(i => i.Comment)
                     .HasForeignKey(i => i.CommentId)
-                    .OnDelete(DeleteBehavior.ClientCascade);
+                    .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Comment>()
-                    .HasMany(i => i.Likes)
+                    .HasMany(i => i.CommentLikes)
                     .WithOne(i => i.Comment)
                     .HasForeignKey(i => i.CommentId)
-                    .OnDelete(DeleteBehavior.ClientCascade);
+                    .OnDelete(DeleteBehavior.Restrict); // Change to Restrict to avoid multiple cascade paths
+
+        //modelBuilder.Entity<Comment>()
+        //            .HasMany(i => i.CommentLikes)
+        //            .WithOne(i => i.Comment)
+        //            .HasForeignKey(i => i.CommentId)
+        //            .OnDelete(DeleteBehavior.Cascade);
     }
 
     private void ConfigureReply(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Reply>()
-                    .HasMany(i => i.Likes)
+                    .HasMany(i => i.ReplyLikes)
                     .WithOne(i => i.Reply)
                     .HasForeignKey(i => i.ReplyId)
-                    .OnDelete(DeleteBehavior.ClientCascade);
+                    .OnDelete(DeleteBehavior.Restrict);
     }
 }

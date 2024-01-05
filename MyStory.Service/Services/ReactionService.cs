@@ -1,13 +1,24 @@
-﻿using MyStory.DTOs.Dtos.ReactionDtos;
+﻿using AutoMapper;
+using MediumStory.Domain.Entities;
+using MyStory.Data.Interfaces;
+using MyStory.DTOs.Dtos.ReactionDtos;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
 
-public class ReactionService : IReactionService
+public class ReactionService(IUnitOfWork unitOfWork,
+                             IMapper mapper) : IReactionService
 {
-    public Task CreateAsync(AddReactionDto articleDto)
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IMapper _mapper = mapper;
+
+    public async Task CreateAsync(AddReactionDto reactiveDto)
     {
-        throw new NotImplementedException();
+        var reaction = _mapper.Map<Reaction>(reactiveDto);
+        reaction.Article = null;
+        reaction.User = null;
+        await _unitOfWork.Reaction.CreateAsync(reaction);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public Task DeleteAsync(int Id)
@@ -15,8 +26,10 @@ public class ReactionService : IReactionService
         throw new NotImplementedException();
     }
 
-    public Task<List<ReactionDto>> GetAllAsync()
+    public async Task<List<ReactionDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var reactions = await _unitOfWork.Reaction.GetAllAsync();
+        var reactionDtos = reactions.Select(i => _mapper.Map<ReactionDto>(i));
+        return reactionDtos.ToList();
     }
 }

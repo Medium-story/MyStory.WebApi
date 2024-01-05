@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MyStory.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231225123158_InitialSecond")]
-    partial class InitialSecond
+    [Migration("20240104193048_Second")]
+    partial class Second
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,7 +82,7 @@ namespace MyStory.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArticleId")
+                    b.Property<int?>("ArticleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -138,10 +138,7 @@ namespace MyStory.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReplyId")
+                    b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -152,11 +149,9 @@ namespace MyStory.Data.Migrations
 
                     b.HasIndex("CommentId");
 
-                    b.HasIndex("ReplyId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("CommentLikes");
                 });
 
             modelBuilder.Entity("MediumStory.Domain.Entities.Reaction", b =>
@@ -466,6 +461,30 @@ namespace MyStory.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MyStory.Domain.Entities.ReplyLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ReplyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReplyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReplyLikes");
+                });
+
             modelBuilder.Entity("ArticleUser", b =>
                 {
                     b.HasOne("MediumStory.Domain.Entities.Article", null)
@@ -497,8 +516,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Comments")
@@ -533,18 +551,11 @@ namespace MyStory.Data.Migrations
             modelBuilder.Entity("MediumStory.Domain.Entities.Like", b =>
                 {
                     b.HasOne("MediumStory.Domain.Entities.Comment", "Comment")
-                        .WithMany("Likes")
+                        .WithMany("CommentLikes")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("MediumStory.Domain.Entities.Reply", "Reply")
-                        .WithMany("Likes")
-                        .HasForeignKey("ReplyId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("MediumStory.Domain.Entities.User", null)
+                    b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Like")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -552,7 +563,7 @@ namespace MyStory.Data.Migrations
 
                     b.Navigation("Comment");
 
-                    b.Navigation("Reply");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MediumStory.Domain.Entities.Reaction", b =>
@@ -577,19 +588,19 @@ namespace MyStory.Data.Migrations
             modelBuilder.Entity("MediumStory.Domain.Entities.Reply", b =>
                 {
                     b.HasOne("MediumStory.Domain.Entities.Article", "Article")
-                        .WithMany("Replies")
+                        .WithMany()
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MediumStory.Domain.Entities.Comment", "Comment")
                         .WithMany("Replies")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Replies")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -659,25 +670,41 @@ namespace MyStory.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyStory.Domain.Entities.ReplyLike", b =>
+                {
+                    b.HasOne("MediumStory.Domain.Entities.Reply", "Reply")
+                        .WithMany("ReplyLikes")
+                        .HasForeignKey("ReplyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MediumStory.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reply");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MediumStory.Domain.Entities.Article", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("Reactions");
-
-                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("MediumStory.Domain.Entities.Comment", b =>
                 {
-                    b.Navigation("Likes");
+                    b.Navigation("CommentLikes");
 
                     b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("MediumStory.Domain.Entities.Reply", b =>
                 {
-                    b.Navigation("Likes");
+                    b.Navigation("ReplyLikes");
                 });
 
             modelBuilder.Entity("MediumStory.Domain.Entities.Tag", b =>
@@ -698,6 +725,8 @@ namespace MyStory.Data.Migrations
                     b.Navigation("Like");
 
                     b.Navigation("Reactions");
+
+                    b.Navigation("Replies");
                 });
 #pragma warning restore 612, 618
         }

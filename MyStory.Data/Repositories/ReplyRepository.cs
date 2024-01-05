@@ -12,7 +12,7 @@ public class ReplyRepository(AppDbContext appDb) : Repository<Reply>(appDb), IRe
     public async Task<ICollection<Reply>> GetAllWithEntities()
     {
         var list = await _appDb.Replies
-                        .Include(i => i.Likes)
+                        .Include(i => i.ReplyLikes)
                         .ToListAsync();
         return list;
     }

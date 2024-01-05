@@ -1,15 +1,7 @@
 using AutoMapper;
-using MediumStory.Data.DataContext;
-using MediumStory.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MyStory.Api.Configurations;
 using MyStory.Api.Configurations.Layers;
-using MyStory.Data.Interfaces;
-using MyStory.Data.Repositories;
 using MyStory.DTOs;
-using MyStory.Service.Interfaces;
-using MyStory.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +19,7 @@ builder.ConfigureService();
 /// Cors configuration
 builder.ConfigureCORSPolicy();
 
-
+#region Add Mapper configuration
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new MyMapper());
@@ -35,8 +27,7 @@ var mapperConfig = new MapperConfiguration(mc =>
 
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-
-
+#endregion
 
 var app = builder.Build();
 

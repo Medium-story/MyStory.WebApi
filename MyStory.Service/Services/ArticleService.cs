@@ -26,6 +26,7 @@ public class ArticleService(IUnitOfWork unitOfWork,
         var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
         _unitOfWork.Article.Delete(article);
         await _unitOfWork.SaveChangesAsync();
+
     }
 
     public async Task<List<ArticleDto>> GetAllAsync()

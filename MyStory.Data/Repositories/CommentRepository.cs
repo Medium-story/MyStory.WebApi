@@ -11,7 +11,10 @@ public class CommentRepository(AppDbContext appDb) : Repository<Comment>(appDb),
 
     public async Task<ICollection<Comment>> GetAllWithReplies()
     {
-        var comments = await _appDb.Comments.Include(i => i.Replies).ToListAsync();
+        var comments = await _appDb.Comments
+                                   .Include(i => i.CommentLikes)
+                                   .Include(i => i.Replies)
+                                   .ToListAsync();
         return comments;
     }
 }

@@ -16,5 +16,7 @@ public static class ServiceConfiguration
         builder.Services.AddTransient<IArticleService, ArticleService>();
         builder.Services.AddTransient<ICommentService, CommentService>();
         builder.Services.AddTransient<IReplyService, ReplyService>();
+        builder.Services.AddTransient<IReactionService, ReactionService>();
+        builder.Services.AddTransient<ILikeService, LikeService>();
     }
 }

@@ -7,5 +7,4 @@ public class ReactionDto : BaseDto
     public int ArticleId { get; set; }
     public string UserId { get; set; } = string.Empty;
     public ReactionEnum Type { get; set; } 
-
 }

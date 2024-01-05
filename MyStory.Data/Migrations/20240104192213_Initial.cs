@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyStory.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialStarted : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -204,25 +204,25 @@ namespace MyStory.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Follow",
+                name: "Follows",
                 columns: table => new
                 {
-                    FollowId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FollowerUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FollowingUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Follow", x => x.FollowId);
+                    table.PrimaryKey("PK_Follows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Follow_AspNetUsers_FollowerUserId",
+                        name: "FK_Follows_AspNetUsers_FollowerUserId",
                         column: x => x.FollowerUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Follow_AspNetUsers_FollowingUserId",
+                        name: "FK_Follows_AspNetUsers_FollowingUserId",
                         column: x => x.FollowingUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -307,6 +307,32 @@ namespace MyStory.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CommentLikes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommentId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentLikes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentLikes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentLikes_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Replies",
                 columns: table => new
                 {
@@ -325,7 +351,8 @@ namespace MyStory.Data.Migrations
                         name: "FK_Replies_Article_ArticleId",
                         column: x => x.ArticleId,
                         principalTable: "Article",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Replies_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -336,38 +363,34 @@ namespace MyStory.Data.Migrations
                         name: "FK_Replies_Comments_CommentId",
                         column: x => x.CommentId,
                         principalTable: "Comments",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "ReplyLikes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CommentId = table.Column<int>(type: "int", nullable: false),
                     ReplyId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
+                    table.PrimaryKey("PK_ReplyLikes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId",
+                        name: "FK_ReplyLikes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Likes_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Likes_Replies_ReplyId",
+                        name: "FK_ReplyLikes_Replies_ReplyId",
                         column: x => x.ReplyId,
                         principalTable: "Replies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -420,6 +443,16 @@ namespace MyStory.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CommentLikes_CommentId",
+                table: "CommentLikes",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentLikes_UserId",
+                table: "CommentLikes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_ArticleId",
                 table: "Comments",
                 column: "ArticleId");
@@ -430,29 +463,14 @@ namespace MyStory.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follow_FollowerUserId",
-                table: "Follow",
+                name: "IX_Follows_FollowerUserId",
+                table: "Follows",
                 column: "FollowerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follow_FollowingUserId",
-                table: "Follow",
+                name: "IX_Follows_FollowingUserId",
+                table: "Follows",
                 column: "FollowingUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_CommentId",
-                table: "Likes",
-                column: "CommentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_ReplyId",
-                table: "Likes",
-                column: "ReplyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId",
-                table: "Likes",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reactions_ArticleId",
@@ -480,6 +498,16 @@ namespace MyStory.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReplyLikes_ReplyId",
+                table: "ReplyLikes",
+                column: "ReplyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReplyLikes_UserId",
+                table: "ReplyLikes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SavedArticles_UsersId",
                 table: "SavedArticles",
                 column: "UsersId");
@@ -504,13 +532,16 @@ namespace MyStory.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Follow");
+                name: "CommentLikes");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "Follows");
 
             migrationBuilder.DropTable(
                 name: "Reactions");
+
+            migrationBuilder.DropTable(
+                name: "ReplyLikes");
 
             migrationBuilder.DropTable(
                 name: "SavedArticles");

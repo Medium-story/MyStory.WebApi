@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         Comment = new CommentRepository(appDb);
         Follow = new FollowRepository(appDb);
         Like = new LikeRepository(appDb);
+        ReplyLike = new ReplyLikeRepository(appDb);
         Reaction = new ReactionRepository(appDb);
         Reply = new ReplyRepository(appDb);
         Tag = new TagRepository(appDb);
@@ -22,6 +23,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     public ICommentInterface Comment { get; }
     public IFollowInterface Follow { get; }
     public ILikeInterface Like { get; }
+    public IReplyLikeInterface ReplyLike { get; }
     public IReactionInterface Reaction { get; }
     public IReplyInterface Reply { get; }
     public ITagInterface Tag { get; }
