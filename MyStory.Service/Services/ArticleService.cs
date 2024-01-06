@@ -14,7 +14,6 @@ public class ArticleService(IUnitOfWork unitOfWork,
 
     public async Task CreateAsync(AddArticleDto articleDto)
     {
-        // SS
         var article = _mapper.Map<Article>(articleDto);
         article.User = null;
         await _unitOfWork.Article.CreateAsync(article);

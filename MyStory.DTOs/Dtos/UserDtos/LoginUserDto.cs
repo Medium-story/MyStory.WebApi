@@ -5,8 +5,7 @@ namespace MyStory.DTOs.Dtos.UserDtos;
 public class LoginUserDto
 {
     [Required]
-    public string EmailAddress { get; set; } = string.Empty;
-
+    public string PhoneNumber { get; set; } = null!;
     [Required]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; } = null!;
 }
