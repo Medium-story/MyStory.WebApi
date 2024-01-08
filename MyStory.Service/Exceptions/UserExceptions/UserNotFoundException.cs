@@ -1,6 +1,6 @@
 ﻿namespace MyStory.Service.Exceptions.UserExceptions;
 
-internal class UserNotFoundException : NotFoundException
+public class UserNotFoundException : NotFoundException
 {
     public UserNotFoundException()
     {

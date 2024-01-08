@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+/// Swagger Authorization Configuration
+builder.ConfigureSwaggerAuth();
 
 /// Data Configuration
 builder.ConfigureDataAcces();
@@ -19,15 +21,8 @@ builder.ConfigureService();
 /// Cors configuration
 builder.ConfigureCORSPolicy();
 
-#region Add Mapper configuration
-var mapperConfig = new MapperConfiguration(mc =>
-{
-    mc.AddProfile(new MyMapper());
-});
-
-IMapper mapper = mapperConfig.CreateMapper();
-builder.Services.AddSingleton(mapper);
-#endregion
+/// Mapper configuration
+builder.ConfigurationMapper();
 
 var app = builder.Build();
 
@@ -42,8 +37,13 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+/// Role Configuration
+app.SeedRolesToDatabase();
 
 app.Run();
