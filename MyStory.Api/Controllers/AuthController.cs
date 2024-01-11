@@ -29,7 +29,7 @@ public class AuthController(IUserService userService) : ControllerBase
         }
         catch (UserBadRequestException ex)
         {
-            return StatusCode(500, ex.Message);
+            return StatusCode(500, ex.TitleMessage);
         }
     }
 

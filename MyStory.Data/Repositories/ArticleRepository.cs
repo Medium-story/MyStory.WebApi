@@ -9,7 +9,7 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
 {
     private readonly AppDbContext _appDb = appDb;
 
-    public async Task<ICollection<Article>> GetAllWithEntities()
+    public async Task<ICollection<Article>> GetAllWithEntitiesAsync()
     {
         var list = await _appDb.Articles
                                    .Include(i => i.Users)
@@ -23,7 +23,7 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
         return list;
     }
 
-    public async Task<Article> GetByIdWithEntities(int id)
+    public async Task<Article> GetByIdWithEntitiesAsync(int id)
     {
         var article = await _appDb.Articles
                                    .Include(i => i.Users)
@@ -36,5 +36,37 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
                                    .FirstOrDefaultAsync(i => i.Id == id);
 
         return article ?? new Article();
+    }
+
+    public async Task<List<Article>> GetLatestArticlesAsync()
+    {
+        var articles = await _appDb.Articles
+                                   .Include(i => i.Users)
+                                   .Include(i => i.Reactions)
+                                   .Include(i => i.Comments)
+                                   .ThenInclude(i => i.CommentLikes)
+                                   .Include(i => i.Comments)
+                                   .ThenInclude(i => i.Replies)
+                                   .ThenInclude(i => i.ReplyLikes)
+                                   .OrderByDescending(i => i.CreatedAt)
+                                   .ToListAsync();
+
+        return articles;
+    }
+
+    public async Task<List<Article>> GetToptArticlesAsync()
+    {
+        var articles = await _appDb.Articles
+                                   .Include(i => i.Users)
+                                   .Include(i => i.Reactions)
+                                   .Include(i => i.Comments)
+                                   .ThenInclude(i => i.CommentLikes)
+                                   .Include(i => i.Comments)
+                                   .ThenInclude(i => i.Replies)
+                                   .ThenInclude(i => i.ReplyLikes)
+                                   .OrderByDescending(i => i.Comments.Count() + i.Reactions.Count())
+                                   .ToListAsync();
+
+        return articles;
     }
 }
