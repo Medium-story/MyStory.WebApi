@@ -32,7 +32,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
 
     [HttpGet("get-all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetAll()
     {
         try
@@ -40,9 +40,41 @@ public class ArticleController(IArticleService articleService) : ControllerBase
             var result = await articleService.GetAllAsync();
             return Ok(result);
         }
-        catch(ArticleBadRequestException ex)
+        catch (ArticleNotfoundException ex)
         {
-            return BadRequest(ex);
+            return StatusCode(204, ex.TitleMessage);
+        }
+    }
+
+    [HttpGet("get-lates")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetAllLates()
+    {
+        try
+        {
+            var articles = await articleService.GetLatestArticlesAsync();
+            return Ok(articles);
+        }
+        catch(ArticleNotfoundException ex)
+        {
+            return StatusCode(204, ex.TitleMessage);
+        }
+    }
+
+    [HttpGet("get-tops")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetAllTops()
+    {
+        try
+        {
+            var articles = await articleService.GetTopArticlesAsync();
+            return Ok(articles);
+        }
+        catch (ArticleNotfoundException ex)
+        {
+            return StatusCode(204, ex.TitleMessage);
         }
     }
 
