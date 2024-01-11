@@ -7,4 +7,6 @@ public interface IUserService
     Task<AuthServiceResponseDto> RegisterAsync(RegisterUserDto registerDto);
     Task<LoginResultDto> LoginAsync(LoginUserDto dto);
     Task ChangePasswordAsync(ChangePasswordDto dto);
+    Task Logout(LogoutUser logoutUser);
+    Task DeleteAccountAsync(LoginUserDto loginUser);
 }

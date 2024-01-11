@@ -177,4 +177,53 @@ public class UserService(UserManager<User> userManager,
             throw new UserBadRequestException("Failed to change password");
         }
     }
+
+    public async Task Logout(LogoutUser logoutUser)
+    {
+
+
+        if (logoutUser is null)
+        {
+            throw new UserBadRequestException(nameof(logoutUser));
+        }
+
+        var user = await _userManager.FindByNameAsync(logoutUser.PhoneNumber);
+        if (user is null)
+        {
+            throw new UserBadRequestException("User not found");
+        }
+
+        await RemoveAccessToken(user);
+    }
+
+    #region Delete Account 
+    public async Task DeleteAccountAsync(LoginUserDto loginUser)
+    {
+        if (loginUser is null)
+        {
+            throw new UserBadRequestException(nameof(loginUser));
+        }
+
+        var user = await _userManager.FindByNameAsync(loginUser.PhoneNumber);
+        if (user is null)
+        {
+            throw new UserBadRequestException("User not found");
+        }
+
+        await RemoveAccessToken(user);
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new UserBadRequestException("User deletion failed");
+        }
+    }
+    #endregion
+    private async Task RemoveAccessToken(User user)
+    {
+        var result = await _userManager.RemoveAuthenticationTokenAsync(user, "Application", "AccessToken");
+        if (!result.Succeeded)
+        {
+            throw new UserBadRequestException("Access token removal failed:");
+        }
+    }
 }

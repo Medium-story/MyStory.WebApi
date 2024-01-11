@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyStory.DTOs.Dtos.UserDtos;
+using MyStory.Service.Exceptions;
 using MyStory.Service.Exceptions.UserExceptions;
 using MyStory.Service.Interfaces;
 
@@ -65,6 +66,54 @@ public class AuthController(IUserService userService) : ControllerBase
         catch(Exception ex)
         {
             return BadRequest(ex.Message);
+        }
+    }
+    [HttpDelete("logout-user")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Logout(LogoutUser logout)
+    {
+        try
+        {
+            await userService.Logout(logout);
+            return Ok();
+        }
+        catch(UserBadRequestException ex)
+        {
+            return NotFound( ex.Message);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    [HttpDelete("delete-account")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteAccount(LoginUserDto deleteAccountUser)
+    {
+        try
+        {
+            await userService.DeleteAccountAsync(deleteAccountUser);
+            return Ok();
+        }
+        catch (UserBadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }
