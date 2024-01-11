@@ -9,6 +9,7 @@ public interface IUnitOfWork
     public IReplyLikeInterface ReplyLike { get; }
     public IReactionInterface Reaction { get; }
     public IReplyInterface Reply { get; }
+    public ITagInterface Tag { get; }
 
     Task SaveChangesAsync();
 }

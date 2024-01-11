@@ -18,4 +18,5 @@ public class User : IdentityUser
     public virtual ICollection<Article> Saved { get; set; } = new List<Article>();
     public virtual ICollection<Follow> Followers { get; set; } = new List<Follow>();
     public virtual ICollection<Follow> Following { get; set; } = new List<Follow>();
+    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

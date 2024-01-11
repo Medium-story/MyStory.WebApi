@@ -6,6 +6,7 @@ using MyStory.DTOs.Dtos.CommentDtos;
 using MyStory.DTOs.Dtos.LikeDtos;
 using MyStory.DTOs.Dtos.ReactionDtos;
 using MyStory.DTOs.Dtos.ReplyDtos;
+using MyStory.DTOs.Dtos.TagDtos;
 
 namespace MyStory.DTOs;
 
@@ -24,6 +25,10 @@ public class MyMapper : Profile
         CreateMap<AddReplyDto, Reply>();
         CreateMap<Reply, ReplyDto>();
         CreateMap<UpdateReplyDto, Reply>();
+
+        CreateMap<AddTagDto, Tag>();
+        CreateMap<Tag, TagDto>();
+        CreateMap<UpdateTagDto, Tag>();
 
         CreateMap<AddReactionDto, Reaction>();
         CreateMap<Reaction, ReactionDto>();
