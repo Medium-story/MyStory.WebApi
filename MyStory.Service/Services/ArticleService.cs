@@ -27,7 +27,7 @@ public class ArticleService(IUnitOfWork unitOfWork,
 
     public async Task DeleteAsync(int Id)
     {
-        var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
+        var article = await _unitOfWork.Article.GetByIdWithEntitiesAsync(Id);
         if (article == null)
         {
             throw new ArticleNotfoundException();
@@ -39,14 +39,19 @@ public class ArticleService(IUnitOfWork unitOfWork,
 
     public async Task<List<ArticleDto>> GetAllAsync()
     {
-        var article = await _unitOfWork.Article.GetAllWithEntities();
-        var articleDtos = article.Select(i => _mapper.Map<ArticleDto>(i)).ToList();
+        var articles = await _unitOfWork.Article.GetAllWithEntitiesAsync();
+
+        if (articles.Count() == 0)
+        {
+            throw new ArticleNotfoundException("No articles available");
+        }
+        var articleDtos = articles.Select(i => _mapper.Map<ArticleDto>(i)).ToList();
         return articleDtos;
     }
 
     public async Task<ArticleDto> GetByIdAsync(int Id)
     {
-        var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
+        var article = await _unitOfWork.Article.GetByIdWithEntitiesAsync(Id);
         if (article == null)
         {
             throw new ArticleNotfoundException();
@@ -55,13 +60,36 @@ public class ArticleService(IUnitOfWork unitOfWork,
         return articleDto;
     }
 
+    public async Task<List<ArticleDto>> GetLatestArticlesAsync()
+    {
+        var articles = await _unitOfWork.Article.GetLatestArticlesAsync();
+
+        if (articles.Count() == 0)
+        {
+            throw new ArticleNotfoundException("No articles available");
+        }
+        var result = articles.Select(i => _mapper.Map<ArticleDto>(i)).ToList();
+        return result;
+    }
+
+    public async Task<List<ArticleDto>> GetTopArticlesAsync()
+    {
+        var articles = await _unitOfWork.Article.GetToptArticlesAsync();
+        if (articles.Count() == 0)
+        {
+            throw new ArticleNotfoundException("No articles available");
+        }
+        var result = articles.Select(i => _mapper.Map<ArticleDto>(i)).ToList();
+        return result;
+    }
+
     public async Task UpdateAsync(UpdateArticleDto articleDto)
     {
         var article = _mapper.Map<Article>(articleDto);
         article.User = null;
         if (article == null)
         {
-            throw new ArticleBadRequestException();
+            throw new ArticleBadRequestException("An error occurred while updating");
         }
         _unitOfWork.Article.Update(article);
         await _unitOfWork.SaveChangesAsync();

@@ -23,12 +23,19 @@ public class AuthController(IUserService userService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
     {
-        var registerResult = await userService.RegisterAsync(registerDto);
-
-        if (registerResult.IsSucceed)
-            return Ok(registerResult);
-
-        return BadRequest(registerResult);
+        try
+        {
+            await userService.RegisterAsync(registerDto);
+            return Ok();
+        }
+        catch (UserNullException ex)
+        {
+            return BadRequest(ex.TitleMessage);
+        }
+        catch (UserBadRequestException ex)
+        {
+            return StatusCode(500, ex.TitleMessage);
+        }
     }
 
     [HttpPost("login")]
