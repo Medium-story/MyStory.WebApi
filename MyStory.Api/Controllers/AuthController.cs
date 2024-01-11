@@ -21,7 +21,7 @@ public class AuthController(IUserService userService) : ControllerBase
     {
         try
         {
-            await userService.RegisterAsync(dto);
+            await userService.RegisterAsync(registerDto);
             return Ok();
         }
         catch (UserNullException ex)
