@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyStory.DTOs.Dtos.UserDtos;
+using MyStory.Service.Exceptions;
 using MyStory.Service.Exceptions.UserExceptions;
 using MyStory.Service.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
@@ -93,5 +95,27 @@ public class UserService(UserManager<User> userManager,
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    public async Task ChangePasswordAsync(ChangePasswordDto dto)
+    {
+        if (dto is null)
+        {
+            throw new UserBadRequestException(nameof(dto));
+        }
+
+        var user = await _userManager.FindByNameAsync(dto.PhoneNumber);
+        if (user is null)
+        {
+            throw new UserBadRequestException("User not found");
+        }
+
+        var resul = await _userManager.ChangePasswordAsync(user,
+                                                      dto.OldPassword,
+                                                      dto.NewPassword);
+        if (!resul.Succeeded)
+        {
+            throw new UserBadRequestException("Failed to change password");
+        }
     }
 }

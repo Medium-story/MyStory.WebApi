@@ -53,4 +53,25 @@ public class AuthController(IUserService userService) : ControllerBase
             return BadRequest(ex.TitleMessage);
         }
     }
+
+    [HttpPost("change-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        try
+        {
+            await userService.ChangePasswordAsync(dto);
+            return Ok();
+        }
+        catch(UserBadRequestException ex)
+        {
+            return NotFound(ex.TitleMessage);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
