@@ -4,14 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 using MyStory.DTOs.Dtos.ArticleDtos;
 using MyStory.Service.Exceptions.ArticleException;
 using MyStory.Service.Interfaces;
+using MyStory.Service.Roles;
 
 namespace MyStory.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+//[Authorize(Roles =StaticUserRoles.User)]
 public class ArticleController(IArticleService articleService) : ControllerBase
 {
     private readonly IArticleService articleService = articleService;
+
+    [HttpGet("get-all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var result = await articleService.GetAllAsync();
+            return Ok(result);
+        }
+        catch (ArticleBadRequestException ex)
+        {
+            return BadRequest(ex);
+        }
+    }
 
     [HttpPost("add")]
     [AllowAnonymous]
@@ -30,21 +48,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
     }
 
-    [HttpGet("get-all")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAll()
-    {
-        try
-        {
-            var result = await articleService.GetAllAsync();
-            return Ok(result);
-        }
-        catch(ArticleBadRequestException ex)
-        {
-            return BadRequest(ex);
-        }
-    }
+
 
     [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
