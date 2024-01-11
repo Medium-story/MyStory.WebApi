@@ -16,21 +16,14 @@ public class AuthController(IUserService userService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto dto)
+    public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
     {
-        try
-        {
-            await userService.RegisterAsync(dto);
-            return Ok();
-        }
-        catch (UserNullException ex)
-        {
-            return BadRequest(ex.TitleMessage);
-        }
-        catch (UserBadRequestException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        var registerResult = await userService.RegisterAsync(registerDto);
+
+        if (registerResult.IsSucceed)
+            return Ok(registerResult);
+
+        return BadRequest(registerResult);
     }
 
     [HttpPost("login")]

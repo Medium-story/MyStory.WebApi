@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyStory.DTOs.Dtos.UserDtos;
+using MyStory.DTOs.UserRoleEnums;
 using MyStory.Service.Exceptions;
 using MyStory.Service.Exceptions.UserExceptions;
 using MyStory.Service.Interfaces;
@@ -19,23 +20,80 @@ public class UserService(UserManager<User> userManager,
     private readonly UserManager<User> _userManager = userManager;
     private readonly IConfiguration _configuration = configuration;
 
-    public async Task RegisterAsync(RegisterUserDto dto)
+    #region Register qilish uchun
+    public async Task<AuthServiceResponseDto> RegisterAsync(RegisterUserDto registerDto)
     {
-        if (dto == null)
+        var FulNumber = registerDto.PhoneNumber;
+        var first = FulNumber[0];
+        var PhoneNumber = FulNumber.Remove(0, 1);
+
+        if (!double.TryParse(PhoneNumber, out _))
         {
-            throw new UserNullException();
+            return new AuthServiceResponseDto
+            {
+                IsSucceed = false,
+                Message = "Phone number raqam bo'lishi kerak "
+            };
         }
 
-        var user = (User)dto;
-        var result = await _userManager.CreateAsync(user, dto.Password);
 
-        if (!result.Succeeded)
+        var existingUser = await _userManager.FindByNameAsync(registerDto.PhoneNumber);
+
+        if (existingUser != null)
         {
-            throw new UserBadRequestException();
+            return new AuthServiceResponseDto
+            {
+                IsSucceed = false,
+                Message = "Phone number already exists."
+            };
         }
 
-        await _userManager.AddToRoleAsync(user, "User");
+        var newUser = new User
+        {
+            UserName = registerDto.PhoneNumber,
+            PhoneNumber = registerDto.PhoneNumber,
+            FullName = registerDto.FullName,
+            PhoneNumberConfirmed = true,
+
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+
+        var createUserResult = await _userManager.CreateAsync(newUser, registerDto.Password);
+
+        if (!createUserResult.Succeeded)
+        {
+            var errorString = "User creation failed because: " + string.Join(" ", createUserResult.Errors.Select(e => e.Description));
+
+            return new AuthServiceResponseDto
+            {
+                IsSucceed = false,
+                Message = errorString
+            };
+        }
+
+        if (Enum.TryParse(registerDto.userRoles.ToString(), true, out UserRoles userRole))
+        {
+            string roleName = userRole.ToString();
+            await _userManager.AddToRoleAsync(newUser, roleName);
+        }
+        else
+        {
+            return new AuthServiceResponseDto
+            {
+                IsSucceed = false,
+                Message = $"Invalid role: {registerDto.userRoles}"
+            };
+        }
+
+        return new AuthServiceResponseDto
+        {
+            IsSucceed = true,
+            Message = "User created successfully."
+        };
     }
+
+    #endregion
+
 
     public async Task<LoginResultDto> LoginAsync(LoginUserDto dto)
     {
@@ -60,6 +118,7 @@ public class UserService(UserManager<User> userManager,
 
         return new LoginResultDto()
         {
+            UserId = user.Id,
             PhoneNumber = user.PhoneNumber!,
             ExpireAt = DateTime.UtcNow.AddDays(1),
             FullName = user.FullName!,

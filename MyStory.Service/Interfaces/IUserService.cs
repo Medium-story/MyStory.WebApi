@@ -4,7 +4,7 @@ namespace MyStory.Service.Interfaces;
 
 public interface IUserService
 {
-    Task RegisterAsync(RegisterUserDto dto);
+    Task<AuthServiceResponseDto> RegisterAsync(RegisterUserDto registerDto);
     Task<LoginResultDto> LoginAsync(LoginUserDto dto);
     Task ChangePasswordAsync(ChangePasswordDto dto);
 }

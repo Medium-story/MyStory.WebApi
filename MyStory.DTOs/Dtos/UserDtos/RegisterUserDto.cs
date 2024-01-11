@@ -10,15 +10,4 @@ public class RegisterUserDto : LoginUserDto
 
     public UserRoles userRoles { get; set; }
 
-    public static implicit operator User(RegisterUserDto dto)
-    {
-        return new User
-        {
-            UserName = dto.PhoneNumber,
-            PhoneNumber = dto.PhoneNumber,
-            FullName = dto.FullName,
-            PhoneNumberConfirmed = true,
-
-        };
-    }
 }
