@@ -54,7 +54,7 @@ public class AuthController(IUserService userService) : ControllerBase
         }
     }
 
-    [HttpPost("change-password")]
+    [HttpPut("change-password")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
