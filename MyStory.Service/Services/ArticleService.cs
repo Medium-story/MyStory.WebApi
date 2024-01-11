@@ -47,6 +47,10 @@ public class ArticleService(IUnitOfWork unitOfWork,
     public async Task<ArticleDto> GetByIdAsync(int Id)
     {
         var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
+        if (article == null)
+        {
+            throw new ArticleNotfoundException();
+        }
         var articleDto = _mapper.Map<ArticleDto>(article);
         return articleDto;
     }
@@ -55,6 +59,10 @@ public class ArticleService(IUnitOfWork unitOfWork,
     {
         var article = _mapper.Map<Article>(articleDto);
         article.User = null;
+        if (article == null)
+        {
+            throw new ArticleBadRequestException();
+        }
         _unitOfWork.Article.Update(article);
         await _unitOfWork.SaveChangesAsync();
     }
