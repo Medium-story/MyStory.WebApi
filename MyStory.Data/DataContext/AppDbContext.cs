@@ -84,19 +84,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                     .HasMany(i => i.Replies)
                     .WithOne(i => i.Comment)
                     .HasForeignKey(i => i.CommentId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.ClientCascade);
 
         modelBuilder.Entity<Comment>()
                     .HasMany(i => i.CommentLikes)
                     .WithOne(i => i.Comment)
                     .HasForeignKey(i => i.CommentId)
-                    .OnDelete(DeleteBehavior.Restrict); // Change to Restrict to avoid multiple cascade paths
-
-        //modelBuilder.Entity<Comment>()
-        //            .HasMany(i => i.CommentLikes)
-        //            .WithOne(i => i.Comment)
-        //            .HasForeignKey(i => i.CommentId)
-        //            .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.ClientCascade); // Change to Restrict to avoid multiple cascade paths
     }
 
     private void ConfigureReply(ModelBuilder modelBuilder)
@@ -105,6 +99,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                     .HasMany(i => i.ReplyLikes)
                     .WithOne(i => i.Reply)
                     .HasForeignKey(i => i.ReplyId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.ClientCascade);
     }
 }

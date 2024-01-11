@@ -2,6 +2,7 @@
 using MediumStory.Domain.Entities;
 using MyStory.Data.Interfaces;
 using MyStory.DTOs.Dtos.ArticleDtos;
+using MyStory.Service.Exceptions.ArticleException;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
@@ -16,6 +17,10 @@ public class ArticleService(IUnitOfWork unitOfWork,
     {
         var article = _mapper.Map<Article>(articleDto);
         article.User = null;
+        if (article == null)
+        {
+            throw new ArticleNullException();
+        }
         await _unitOfWork.Article.CreateAsync(article);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -23,9 +28,13 @@ public class ArticleService(IUnitOfWork unitOfWork,
     public async Task DeleteAsync(int Id)
     {
         var article = await _unitOfWork.Article.GetByIdWithEntities(Id);
+        if (article == null)
+        {
+            throw new ArticleNotfoundException();
+        }
         _unitOfWork.Article.Delete(article);
-        await _unitOfWork.SaveChangesAsync();
 
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<List<ArticleDto>> GetAllAsync()

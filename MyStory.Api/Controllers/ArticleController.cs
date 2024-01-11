@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyStory.DTOs.Dtos.ArticleDtos;
 using MyStory.Service.Interfaces;
@@ -12,6 +13,9 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     private readonly IArticleService articleService = articleService;
 
     [HttpPost("add")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddArticle(AddArticleDto addArticle)
     {
         await articleService.CreateAsync(addArticle);
