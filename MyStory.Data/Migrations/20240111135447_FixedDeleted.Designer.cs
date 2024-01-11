@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MyStory.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240104192213_Initial")]
-    partial class Initial
+    [Migration("20240111135447_FixedDeleted")]
+    partial class FixedDeleted
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,7 +82,7 @@ namespace MyStory.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArticleId")
+                    b.Property<int?>("ArticleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -138,7 +138,7 @@ namespace MyStory.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CommentId")
+                    b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -189,10 +189,10 @@ namespace MyStory.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArticleId")
+                    b.Property<int?>("ArticleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CommentId")
+                    b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -469,7 +469,7 @@ namespace MyStory.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ReplyId")
+                    b.Property<int?>("ReplyId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -516,8 +516,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Comments")
@@ -554,8 +553,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Comment", "Comment")
                         .WithMany("CommentLikes")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Like")
@@ -591,15 +589,12 @@ namespace MyStory.Data.Migrations
                 {
                     b.HasOne("MediumStory.Domain.Entities.Article", "Article")
                         .WithMany()
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ArticleId");
 
                     b.HasOne("MediumStory.Domain.Entities.Comment", "Comment")
                         .WithMany("Replies")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Replies")
@@ -677,8 +672,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Reply", "Reply")
                         .WithMany("ReplyLikes")
                         .HasForeignKey("ReplyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany()

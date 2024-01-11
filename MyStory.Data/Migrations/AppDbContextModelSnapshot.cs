@@ -550,7 +550,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Comment", "Comment")
                         .WithMany("CommentLikes")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Like")
@@ -591,7 +591,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Comment", "Comment")
                         .WithMany("Replies")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany("Replies")
@@ -669,7 +669,7 @@ namespace MyStory.Data.Migrations
                     b.HasOne("MediumStory.Domain.Entities.Reply", "Reply")
                         .WithMany("ReplyLikes")
                         .HasForeignKey("ReplyId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("MediumStory.Domain.Entities.User", "User")
                         .WithMany()

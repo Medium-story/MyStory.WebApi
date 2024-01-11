@@ -6,4 +6,9 @@ public class UserNullException : ArgumentNullException
     {
         TitleMessage = "User is null!";
     }
+
+    public UserNullException(string errorMessage)
+    {
+        this.TitleMessage = errorMessage;
+    }
 }
