@@ -77,7 +77,7 @@ public class CommentService(IUnitOfWork unitOfWork,
         {
             throw new CommentNullException();
         }
-        var comment1 = await _unitOfWork.Comment.GetByIdAsync(commentDto.Id);
+        var comment1 = _unitOfWork.Comment.GetByIdAsync(commentDto.Id);
         if(comment1 is null)
         {
             throw new CommentNotFoundException("Comment not found!");

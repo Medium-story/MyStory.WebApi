@@ -5,7 +5,9 @@ using MyStory.Domain.Entities;
 using MyStory.DTOs.Dtos.ArticleDtos;
 using MyStory.DTOs.Dtos.LikeDtos;
 using MyStory.Service.Exceptions.LikeException;
+using MyStory.Service.Exceptions.UserExceptions;
 using MyStory.Service.Interfaces;
+using MyStory.Service.Validators;
 
 namespace MyStory.Service.Services;
 
@@ -21,13 +23,31 @@ public class LikeService(IUnitOfWork unitOfWork,
         {
             throw new LikeNullException();
         }
+
         var like = _mapper.Map<Like>(addLikeDto);
 
-        var liked = 
-        like.Comment = null;
-        like.User = null;
-        await _unitOfWork.Like.CreateAsync(like);
-        await _unitOfWork.SaveChangesAsync();
+        var likes = await _unitOfWork.Like.GetAllAsync();
+
+        if (like.IsExist(likes))
+        {
+            var existingLike = likes.FirstOrDefault(l => l.UserId == like.UserId);
+            existingLike.User = null;
+            existingLike.Comment = null;
+
+
+            if (existingLike != null)
+            {
+                _unitOfWork.Like.Delete(existingLike);
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
+        else
+        {
+            like.Comment = null;
+            like.User = null;
+            await _unitOfWork.Like.CreateAsync(like);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 
     public async Task CreateReplyLikeAsync(AddReplyLikeDto addLikeDto)
@@ -47,11 +67,14 @@ public class LikeService(IUnitOfWork unitOfWork,
         {
             throw new LikeNullException();
         }
-        var like = await _unitOfWork.Like.GetByIdAsync(Id);
+        var like = await GetByIdCommentLikeAsync(Id);
         if (like == null)
         {
             throw new LikeNotFoundException();
         }
+
+        like.User = null;
+        like.Comment = null;
         _unitOfWork.Like.Delete(like);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -69,12 +92,22 @@ public class LikeService(IUnitOfWork unitOfWork,
 
     public async Task<List<ReplyLikeDto>> GetAllReplyLikeAsync()
     {
-        var likes = await _unitOfWork.Like.GetAllAsync();
+        var likes = await _unitOfWork.ReplyLike.GetAllAsync();
         if (likes == null)
         {
             throw new LikeNullException();
         }
         var likeDtos = likes.Select(i => _mapper.Map<ReplyLikeDto>(i)).ToList();
         return likeDtos;
+    }
+
+    public async Task<Like> GetByIdCommentLikeAsync(int id)
+    {
+        var like = await _unitOfWork.Like.GetByIdAsync(id);
+        if (like == null)
+        {
+            throw new LikeNullException();
+        }
+        return like;
     }
 }
