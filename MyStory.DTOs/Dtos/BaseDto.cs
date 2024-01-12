@@ -2,5 +2,5 @@
 
 public class BaseDto
 {
-    public string Id { get; set; } = string.Empty;
+    public int Id { get; set; }
 }
