@@ -47,6 +47,22 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
     }
 
+    [HttpGet("get-by-id")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAllByIdWithEntitesAsync(int id)
+    {
+        try
+        {
+            var result = await articleService.GetByIdWithentitiesAsync(id);
+            return Ok(result);
+        }
+        catch (ArticleNotfoundException ex)
+        {
+            return StatusCode(204, ex.TitleMessage);
+        }
+    }
+
     [HttpGet("get-lates")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -82,6 +98,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult Update(UpdateArticleDto updateArticle)
     {
         try
@@ -91,7 +108,11 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
         catch(ArticleBadRequestException ex)
         {
-            return BadRequest(ex);
+            return BadRequest(ex.TitleMessage);
+        }
+        catch(ArticleNotfoundException ex)
+        {
+            return NotFound(ex.TitleMessage);
         }
     }
 
@@ -109,11 +130,11 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
         catch(ArticleNotfoundException ex)
         {
-            return NotFound(ex);
+            return NotFound(ex.TitleMessage);
         }
         catch(ArticleBadRequestException ex)
         {
-            return BadRequest(ex);
+            return BadRequest(ex.TitleMessage);
         }
     }
 }

@@ -49,7 +49,7 @@ public class ArticleService(IUnitOfWork unitOfWork,
         return articleDtos;
     }
 
-    public async Task<ArticleDto> GetByIdAsync(int Id)
+    public async Task<ArticleDto> GetByIdWithentitiesAsync(int Id)
     {
         var article = await _unitOfWork.Article.GetByIdWithEntitiesAsync(Id);
         if (article == null)
@@ -85,6 +85,11 @@ public class ArticleService(IUnitOfWork unitOfWork,
 
     public async Task UpdateAsync(UpdateArticleDto articleDto)
     {
+        var articelDto = await GetByIdWithentitiesAsync(articleDto.Id);
+        if (articleDto is null)
+        {
+            throw new ArticleNotfoundException("Bunday Id li article mavjud emas");
+        }
         var article = _mapper.Map<Article>(articleDto);
         article.User = null;
         if (article == null)
