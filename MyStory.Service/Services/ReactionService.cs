@@ -6,6 +6,7 @@ using MyStory.DTOs.Dtos.TagDtos;
 using MyStory.Service.Exceptions.ReactionRxception;
 using MyStory.Service.Exceptions.TagExceptions;
 using MyStory.Service.Interfaces;
+using MyStory.Service.Validators;
 
 namespace MyStory.Service.Services;
 
@@ -21,7 +22,13 @@ public class ReactionService(IUnitOfWork unitOfWork,
         {
             throw new ReactionNullException();
         }
+        
         var reaction = _mapper.Map<Reaction>(reactiveDto);
+        var reactions = await _unitOfWork.Reaction.GetAllAsync();
+        if (reaction.IsExist(reactions))
+        {
+            throw new ReactionNullException();
+        }
         reaction.Article = null;
         reaction.User = null;
         await _unitOfWork.Reaction.CreateAsync(reaction);

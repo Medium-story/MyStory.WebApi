@@ -30,11 +30,11 @@ public class ReplyController(IReplyService replyService) : ControllerBase
         }
         catch (ReplyNullException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ex.TitleMessage);
         }
         catch (ReplyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
         catch (Exception)
         {
@@ -56,11 +56,11 @@ public class ReplyController(IReplyService replyService) : ControllerBase
         }
         catch (ReplyNullException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ex.TitleMessage);
         }
         catch (ReplyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
         catch (Exception)
         {
@@ -82,11 +82,11 @@ public class ReplyController(IReplyService replyService) : ControllerBase
         }
         catch (ReplyNullException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ex.TitleMessage);
         }
         catch (ReplyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
         catch (Exception)
         {

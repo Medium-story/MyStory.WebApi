@@ -2,7 +2,7 @@
 
 public enum ReactionEnum
 {
-    Like,
+    Like = 1,
     Fire,
     Exploding
 }

@@ -50,15 +50,37 @@ public class LikeService(IUnitOfWork unitOfWork,
         }
     }
 
-    public async Task CreateReplyLikeAsync(AddReplyLikeDto addLikeDto)
+    public async Task CreateReplyLikeAsync(AddReplyLikeDto addReplyDto)
     {
-        if (addLikeDto == null)
+        if (addReplyDto == null)
         {
             throw new LikeNullException();
         }
-        var replyLike = _mapper.Map<ReplyLike>(addLikeDto);
-        await _unitOfWork.ReplyLike.CreateAsync(replyLike);
-        await _unitOfWork.SaveChangesAsync();
+
+        var reply = _mapper.Map<ReplyLike>(addReplyDto);
+
+        var replylikes = await _unitOfWork.ReplyLike.GetAllAsync();
+
+        if (reply.IsExist(replylikes))
+        {
+            var existingLike = replylikes.FirstOrDefault(l => l.UserId == reply.UserId);
+            existingLike.Reply = null;
+            existingLike.User = null;
+
+
+            if (existingLike != null)
+            {
+                _unitOfWork.ReplyLike.Delete(existingLike);
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
+        else
+        {
+            reply.User = null;
+            reply.Reply = null;
+            await _unitOfWork.ReplyLike.CreateAsync(reply);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 
     public async Task DeleteAsync(int Id)

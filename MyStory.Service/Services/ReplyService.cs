@@ -22,6 +22,10 @@ public class ReplyService(IUnitOfWork unitOfWork,
             throw new ReplyNullException();
         }
         var reply = _mapper.Map<Reply>(replyDto);
+        if (reply == null)
+        {
+            throw new ReplyNotFoundException();
+        }
 
         reply.Article = null;
         reply.User = null;
@@ -72,6 +76,8 @@ public class ReplyService(IUnitOfWork unitOfWork,
             throw new ReplyNotFoundException();
         }
         reply.User = null;
+        reply.Comment = null;
+        reply.Article = null;
         _unitOfWork.Reply.Update(reply);
         await _unitOfWork.SaveChangesAsync();
     }
