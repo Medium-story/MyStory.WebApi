@@ -22,6 +22,7 @@ public class ReplyService(IUnitOfWork unitOfWork,
             throw new ReplyNullException();
         }
         var reply = _mapper.Map<Reply>(replyDto);
+
         reply.Article = null;
         reply.User = null;
         reply.Comment = null;
