@@ -15,6 +15,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     private readonly IArticleService articleService = articleService;
 
     [HttpPost("add")]
+    //[Authorize(Roles = "User, Admin, SuperAdmin", AuthenticationSchemes = "Bearer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddArticle(AddArticleDto addArticle)
@@ -38,6 +39,22 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         try
         {
             var result = await articleService.GetAllAsync();
+            return Ok(result);
+        }
+        catch (ArticleNotfoundException ex)
+        {
+            return StatusCode(204, ex.TitleMessage);
+        }
+    }
+
+    [HttpGet("get-by-id")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAllByIdWithEntitesAsync(int id)
+    {
+        try
+        {
+            var result = await articleService.GetByIdWithentitiesAsync(id);
             return Ok(result);
         }
         catch (ArticleNotfoundException ex)
@@ -81,6 +98,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult Update(UpdateArticleDto updateArticle)
     {
         try
@@ -90,7 +108,11 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
         catch(ArticleBadRequestException ex)
         {
-            return BadRequest(ex);
+            return BadRequest(ex.TitleMessage);
+        }
+        catch(ArticleNotfoundException ex)
+        {
+            return NotFound(ex.TitleMessage);
         }
     }
 
@@ -108,11 +130,11 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
         catch(ArticleNotfoundException ex)
         {
-            return NotFound(ex);
+            return NotFound(ex.TitleMessage);
         }
         catch(ArticleBadRequestException ex)
         {
-            return BadRequest(ex);
+            return BadRequest(ex.TitleMessage);
         }
     }
 }
