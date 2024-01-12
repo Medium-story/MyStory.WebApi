@@ -22,6 +22,8 @@ public class LikeService(IUnitOfWork unitOfWork,
             throw new LikeNullException();
         }
         var like = _mapper.Map<Like>(addLikeDto);
+
+        var liked = 
         like.Comment = null;
         like.User = null;
         await _unitOfWork.Like.CreateAsync(like);
