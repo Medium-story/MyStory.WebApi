@@ -35,12 +35,16 @@ public class ReplyService(IUnitOfWork unitOfWork,
         {
             throw new ReplyNullException();
         }
-        var reply = await _unitOfWork.Like.GetByIdAsync(Id);
+        var reply = await _unitOfWork.Reply.GetByIdAsync(Id);
         if (reply == null)
         {
             throw new ReplyNotFoundException();
         }
-        _unitOfWork.Like.Delete(reply);
+        reply.User = null;
+        reply.Article = null;
+        reply.Comment = null;
+
+        _unitOfWork.Reply.Delete(reply);
         await _unitOfWork.SaveChangesAsync();
     }
 
