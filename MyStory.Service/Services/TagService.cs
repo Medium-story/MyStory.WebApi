@@ -74,7 +74,7 @@ public class TagService(IUnitOfWork unitOfWork,
         { 
             throw new TagNullException();
         }
-        var tag = await _unitOfWork.Tag.GetByIdAsync(tagDto.Id);
+        var tag = _unitOfWork.Tag.GetByIdAsync(tagDto.Id);
         if(tag is null)
         {
             throw new TagNotFoundException("Bunday id raqam bilan Tag mavjud emas");

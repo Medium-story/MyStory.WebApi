@@ -27,11 +27,11 @@ public class CommentController(ICommentService commentService) : ControllerBase
         }
         catch (CommentNullException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ex.TitleMessage);
         }
         catch (CommentNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
         catch (Exception)
         {
@@ -53,11 +53,11 @@ public class CommentController(ICommentService commentService) : ControllerBase
         }
         catch (CommentNullException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ex.TitleMessage);
         }
         catch (CommentNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
         catch (Exception)
         {
@@ -79,11 +79,11 @@ public class CommentController(ICommentService commentService) : ControllerBase
         }
         catch (CommentNullException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ex.TitleMessage);
         }
         catch (CommentNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
         catch (Exception)
         {
@@ -96,24 +96,24 @@ public class CommentController(ICommentService commentService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult Update(UpdateCommentDto updateComment)
+    public async Task<IActionResult> Update(UpdateCommentDto updateComment)
     {
         try
         {
-            commentService.UpdateAsync(updateComment);
+            await commentService.UpdateAsync(updateComment);
             return Ok();
-        }
-        catch (CommentNullException ex)
-        {
-            return BadRequest(ex.Message);
         }
         catch (CommentNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
-        catch (Exception)
+        catch (CommentNullException ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return BadRequest(ex.TitleMessage);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404,  ex.Message);
         }
     }
 
@@ -132,17 +132,17 @@ public class CommentController(ICommentService commentService) : ControllerBase
             await commentService.DeleteAsync(id);
             return Ok();
         }
-        catch (CommentNullException ex)
-        {
-            return BadRequest(ex.Message);
-        }
         catch (CommentNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex.TitleMessage);
         }
-        catch (Exception)
+        catch (CommentNullException ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return BadRequest(ex.TitleMessage);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message);
         }
     }
 }

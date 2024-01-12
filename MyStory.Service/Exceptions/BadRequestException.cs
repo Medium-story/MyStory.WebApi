@@ -5,5 +5,5 @@ namespace MyStory.Service.Exceptions;
 public class BadRequestException : ClientException
 {
     public override HttpStatusCode StatusCode { get; } = HttpStatusCode.BadRequest;
-    public override string TitleMessage { get; protected set; } = String.Empty;
+    public override string TitleMessage { get; set; } = String.Empty;
 }

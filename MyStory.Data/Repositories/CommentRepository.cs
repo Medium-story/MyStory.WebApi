@@ -14,7 +14,23 @@ public class CommentRepository(AppDbContext appDb) : Repository<Comment>(appDb),
         var comments = await _appDb.Comments
                                    .Include(i => i.CommentLikes)
                                    .Include(i => i.Replies)
+                                   .ThenInclude(i => i.ReplyLikes)
                                    .ToListAsync();
         return comments;
     }
+
+    public async Task<Comment?> GetByIdWithLike(int id)
+    {
+        var comments = await _appDb.Comments
+                                          .Include(i => i.CommentLikes)
+                                          .Include(i => i.Replies)
+                                          .ThenInclude(i => i.ReplyLikes)
+                                          .FirstOrDefaultAsync(i => i.Id == id);
+
+        return comments;
+
+
+
+    }
 }
+

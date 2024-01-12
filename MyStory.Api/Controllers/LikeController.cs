@@ -90,12 +90,12 @@ public class LikeController(ILikeService likeService) : ControllerBase
         }
     }
 
-    [HttpGet("get-comment")]
+    [HttpGet("get-like-of-comment")]
     //[Authorize(Roles = "SuperAdmin, Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AddComment()
+    public async Task<IActionResult> GetLikeOfComment()
     {
         try
         {
@@ -116,12 +116,12 @@ public class LikeController(ILikeService likeService) : ControllerBase
         }
     }
 
-    [HttpGet("get-reply")]
+    [HttpGet("get-like-of-reply")]
     //[Authorize(Roles = "SuperAdmin, Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AddReply()
+    public async Task<IActionResult> GetLikeOfReply()
     {
         try
         {

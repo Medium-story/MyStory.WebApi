@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MyStory.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240111191336_Finally")]
-    partial class Finally
+    [Migration("20240112191402_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -303,9 +303,6 @@ namespace MyStory.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TagId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -322,8 +319,6 @@ namespace MyStory.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("TagId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -485,6 +480,21 @@ namespace MyStory.Data.Migrations
                     b.ToTable("ReplyLikes");
                 });
 
+            modelBuilder.Entity("TagUser", b =>
+                {
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TagsId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TagUser");
+                });
+
             modelBuilder.Entity("ArticleUser", b =>
                 {
                     b.HasOne("MediumStory.Domain.Entities.Article", null)
@@ -609,13 +619,6 @@ namespace MyStory.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MediumStory.Domain.Entities.User", b =>
-                {
-                    b.HasOne("MediumStory.Domain.Entities.Tag", null)
-                        .WithMany("User")
-                        .HasForeignKey("TagId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -685,6 +688,21 @@ namespace MyStory.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TagUser", b =>
+                {
+                    b.HasOne("MediumStory.Domain.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MediumStory.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MediumStory.Domain.Entities.Article", b =>
                 {
                     b.Navigation("Comments");
@@ -702,11 +720,6 @@ namespace MyStory.Data.Migrations
             modelBuilder.Entity("MediumStory.Domain.Entities.Reply", b =>
                 {
                     b.Navigation("ReplyLikes");
-                });
-
-            modelBuilder.Entity("MediumStory.Domain.Entities.Tag", b =>
-                {
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MediumStory.Domain.Entities.User", b =>

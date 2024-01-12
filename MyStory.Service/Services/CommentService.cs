@@ -34,19 +34,23 @@ public class CommentService(IUnitOfWork unitOfWork,
 
     public async Task DeleteAsync(int Id)
     {
-        if (Id == null)
+
+        var comment1 = await _unitOfWork.Comment.GetByIdAsync(Id);
+        if (comment1 is null)
         {
-            throw new CommentNullException();
+            throw new CommentNotFoundException("Comment not found!");
         }
-        var comment = await _unitOfWork.Comment.GetByIdAsync(Id);
-        if( comment == null)
+        var comment = _mapper.Map<Comment>(comment1);
+
+        if (comment == null)
         {
             throw new CommentNotFoundException();
         }
+        comment.User = null;
+        comment.Article = null;
         _unitOfWork.Comment.Delete(comment);
         await _unitOfWork.SaveChangesAsync();
     }
-
     public async Task<List<CommentDto>> GetAllAsync()
     {
         var comments = await _unitOfWork.Comment.GetAllWithReplies();
@@ -59,7 +63,7 @@ public class CommentService(IUnitOfWork unitOfWork,
 
     public async Task<CommentDto> getByIdAsync(int Id)
     {
-        var comment = await _unitOfWork.Comment.GetByIdAsync(Id);
+        var comment = await _unitOfWork.Comment.GetByIdWithLike(Id);
         if (comment is null)
         {
             throw new CommentNullException();
@@ -73,12 +77,19 @@ public class CommentService(IUnitOfWork unitOfWork,
         {
             throw new CommentNullException();
         }
+        var comment1 = _unitOfWork.Comment.GetByIdAsync(commentDto.Id);
+        if(comment1 is null)
+        {
+            throw new CommentNotFoundException("Comment not found!");
+        }
         var comment = _mapper.Map<Comment>(commentDto);
+
         if(comment == null)
         {
             throw new CommentNotFoundException();
         }
         comment.User = null;
+        comment.Article = null;
         _unitOfWork.Comment.Update(comment);
         await _unitOfWork.SaveChangesAsync();
     }
