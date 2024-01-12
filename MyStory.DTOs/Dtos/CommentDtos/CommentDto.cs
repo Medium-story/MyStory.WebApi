@@ -1,4 +1,5 @@
-﻿using MyStory.DTOs.Dtos.LikeDtos;
+﻿using MediumStory.Domain.Entities;
+using MyStory.DTOs.Dtos.LikeDtos;
 using MyStory.DTOs.Dtos.ReplyDtos;
 
 namespace MyStory.DTOs.Dtos.CommentDtos;
@@ -12,4 +13,5 @@ public class CommentDto : BaseDto
     public virtual ICollection<LikeDto> CommentLikes { get; set; } = new List<LikeDto>();
     public DateTime CreatedAt { get; set; }
 
+  
 }

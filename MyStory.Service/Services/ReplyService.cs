@@ -2,6 +2,9 @@
 using MediumStory.Domain.Entities;
 using MyStory.Data.Interfaces;
 using MyStory.DTOs.Dtos.ReplyDtos;
+using MyStory.DTOs.Dtos.TagDtos;
+using MyStory.Service.Exceptions.ReplyException;
+using MyStory.Service.Exceptions.TagExceptions;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
@@ -14,6 +17,10 @@ public class ReplyService(IUnitOfWork unitOfWork,
 
     public async Task CreateAsync(AddReplyDto replyDto)
     {
+        if (replyDto == null)
+        {
+            throw new ReplyNullException();
+        }
         var reply = _mapper.Map<Reply>(replyDto);
         reply.Article = null;
         reply.User = null;
@@ -22,20 +29,45 @@ public class ReplyService(IUnitOfWork unitOfWork,
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(int Id)
+    public async Task DeleteAsync(int Id)
     {
-        throw new NotImplementedException();
+        if (Id == null)
+        {
+            throw new ReplyNullException();
+        }
+        var reply = await _unitOfWork.Like.GetByIdAsync(Id);
+        if (reply == null)
+        {
+            throw new ReplyNotFoundException();
+        }
+        _unitOfWork.Like.Delete(reply);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<List<ReplyDto>> GetAllAsync()
     {
         var replies = await _unitOfWork.Reply.GetAllWithEntities();
+        if (replies == null)
+        {
+            throw new TagNullException();
+        }
         var result = replies.Select(i => _mapper.Map<ReplyDto>(i)).ToList();
         return result;
     }
 
-    public Task UpdateAsync(UpdateReplyDto articleDto)
+    public async Task UpdateAsync(UpdateReplyDto articleDto)
     {
-        throw new NotImplementedException();
+        if (articleDto == null)
+        {
+            throw new ReplyNullException();
+        }
+        var reply = _mapper.Map<Reply>(articleDto);
+        if (reply == null)
+        {
+            throw new ReplyNotFoundException();
+        }
+        reply.User = null;
+        _unitOfWork.Reply.Update(reply);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

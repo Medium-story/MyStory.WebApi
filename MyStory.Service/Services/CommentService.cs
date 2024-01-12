@@ -2,6 +2,7 @@
 using MediumStory.Domain.Entities;
 using MyStory.Data.Interfaces;
 using MyStory.DTOs.Dtos.CommentDtos;
+using MyStory.Service.Exceptions.CommentException;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
@@ -15,32 +16,70 @@ public class CommentService(IUnitOfWork unitOfWork,
 
     public async Task CreateAsync(AddCommentDto commentDto)
     {
-        // Karochi commit uchun
+        if (commentDto == null)
+        {
+            throw new CommentNullException();
+        }
         var comment = _mapper.Map<Comment>(commentDto);
+
+        if (comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
         comment.Article = null;
         comment.User = null;
         await _unitOfWork.Comment.CreateAsync(comment);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(int Id)
+    public async Task DeleteAsync(int Id)
     {
-        throw new NotImplementedException();
+        if (Id == null)
+        {
+            throw new CommentNullException();
+        }
+        var comment = await _unitOfWork.Comment.GetByIdAsync(Id);
+        if( comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
+        _unitOfWork.Comment.Delete(comment);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<List<CommentDto>> GetAllAsync()
     {
         var comments = await _unitOfWork.Comment.GetAllWithReplies();
+        if (comments == null)
+        {
+            throw new CommentNullException();
+        }
         return comments.Select(i => _mapper.Map<CommentDto>(i)).ToList();
     }
 
-    public Task<CommentDto> getByIdAsync(int Id)
+    public async Task<CommentDto> getByIdAsync(int Id)
     {
-        throw new NotImplementedException();
+        var comment = await _unitOfWork.Comment.GetByIdAsync(Id);
+        if (comment is null)
+        {
+            throw new CommentNullException();
+        }
+        return _mapper.Map<CommentDto>(comment);
     }
 
-    public Task UpdateAsync(UpdateCommentDto commentDto)
+    public async Task UpdateAsync(UpdateCommentDto commentDto)
     {
-        throw new NotImplementedException();
+        if (commentDto == null)
+        {
+            throw new CommentNullException();
+        }
+        var comment = _mapper.Map<Comment>(commentDto);
+        if(comment == null)
+        {
+            throw new CommentNotFoundException();
+        }
+        comment.User = null;
+        _unitOfWork.Comment.Update(comment);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

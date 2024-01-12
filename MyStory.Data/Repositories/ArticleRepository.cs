@@ -19,6 +19,7 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
                                    .Include(i => i.Comments)
                                    .ThenInclude(i => i.Replies)
                                    .ThenInclude(i => i.ReplyLikes)
+                                   .AsNoTracking()
                                    .ToListAsync();
         return list;
     }
@@ -33,6 +34,7 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
                                    .Include(i => i.Comments)
                                    .ThenInclude(i => i.Replies)
                                    .ThenInclude(i => i.ReplyLikes)
+                                   .AsNoTracking()
                                    .FirstOrDefaultAsync(i => i.Id == id);
 
         return article ?? new Article();
@@ -49,6 +51,7 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
                                    .ThenInclude(i => i.Replies)
                                    .ThenInclude(i => i.ReplyLikes)
                                    .OrderByDescending(i => i.CreatedAt)
+                                   .AsNoTracking()
                                    .ToListAsync();
 
         return articles;
@@ -65,6 +68,7 @@ public class ArticleRepository(AppDbContext appDb) : Repository<Article>(appDb),
                                    .ThenInclude(i => i.Replies)
                                    .ThenInclude(i => i.ReplyLikes)
                                    .OrderByDescending(i => i.Comments.Count() + i.Reactions.Count())
+                                   .AsNoTracking()
                                    .ToListAsync();
 
         return articles;

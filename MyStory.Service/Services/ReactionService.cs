@@ -2,6 +2,9 @@
 using MediumStory.Domain.Entities;
 using MyStory.Data.Interfaces;
 using MyStory.DTOs.Dtos.ReactionDtos;
+using MyStory.DTOs.Dtos.TagDtos;
+using MyStory.Service.Exceptions.ReactionRxception;
+using MyStory.Service.Exceptions.TagExceptions;
 using MyStory.Service.Interfaces;
 
 namespace MyStory.Service.Services;
@@ -14,6 +17,10 @@ public class ReactionService(IUnitOfWork unitOfWork,
 
     public async Task CreateAsync(AddReactionDto reactiveDto)
     {
+        if (reactiveDto == null)
+        {
+            throw new ReactionNullException();
+        }
         var reaction = _mapper.Map<Reaction>(reactiveDto);
         reaction.Article = null;
         reaction.User = null;
@@ -21,14 +28,28 @@ public class ReactionService(IUnitOfWork unitOfWork,
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(int Id)
+    public async Task DeleteAsync(int Id)
     {
-        throw new NotImplementedException();
+        if (Id == null)
+        {
+            throw new ReactionNullException();
+        }
+        var reaction = await _unitOfWork.Reaction.GetByIdAsync(Id);
+        if (reaction == null)
+        {
+            throw new TagNotFoundException();
+        }
+        _unitOfWork.Reaction.Delete(reaction);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<List<ReactionDto>> GetAllAsync()
     {
         var reactions = await _unitOfWork.Reaction.GetAllAsync();
+        if (reactions == null)
+        {
+            throw new ReactionNullException();
+        }
         var reactionDtos = reactions.Select(i => _mapper.Map<ReactionDto>(i));
         return reactionDtos.ToList();
     }
