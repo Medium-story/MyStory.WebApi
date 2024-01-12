@@ -15,7 +15,6 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     private readonly IArticleService articleService = articleService;
 
     [HttpPost("add")]
-    //[Authorize(Roles = "User, Admin, SuperAdmin", AuthenticationSchemes = "Bearer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddArticle(AddArticleDto addArticle)
