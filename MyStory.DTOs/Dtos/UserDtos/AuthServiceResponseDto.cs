@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyStory.DTOs.Dtos.UserDtos;
-
-
+﻿namespace MyStory.DTOs.Dtos.UserDtos;
 public class AuthServiceResponseDto
 {
     public string UserId { get; set; } = string.Empty;

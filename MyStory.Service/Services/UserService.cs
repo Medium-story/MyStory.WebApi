@@ -1,5 +1,7 @@
-﻿using MediumStory.Domain.Entities;
+﻿using AutoMapper;
+using MediumStory.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyStory.DTOs.Dtos.UserDtos;
@@ -15,10 +17,12 @@ using System.Text;
 namespace MyStory.Service.Services;
 
 public class UserService(UserManager<User> userManager,
-                         IConfiguration configuration) : IUserService
+                         IConfiguration configuration,
+                         IMapper mapper) : IUserService
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IConfiguration _configuration = configuration;
+    private readonly IMapper _mapper = mapper;
 
     #region Register qilish uchun
     public async Task<AuthServiceResponseDto> RegisterAsync(RegisterUserDto registerDto)
@@ -93,7 +97,6 @@ public class UserService(UserManager<User> userManager,
     }
 
     #endregion
-
 
     public async Task<LoginResultDto> LoginAsync(LoginUserDto dto)
     {
@@ -225,5 +228,37 @@ public class UserService(UserManager<User> userManager,
         {
             throw new UserBadRequestException("Access token removal failed:");
         }
+    }
+
+    public async Task<List<UserDto>> GetAllUsersAsync()
+    {
+        var result = await _userManager.Users
+                           .Include(i => i.Replies)
+                           .Include(i => i.Comments)
+                           .Include(i => i.Articles)
+                           .Include(i => i.Saved)
+                           .Include(i => i.Followers)
+                           .Include(i => i.Following)
+                           .ToListAsync();
+
+        if (result.Count() == 0) throw new UserNotFoundException("There are no users in the database");
+
+        return result.Select(i => _mapper.Map<UserDto>(i)).ToList();
+      }
+
+    public async Task<UserDto> GetByIdUserAsync(string id)
+    {
+        var result = await _userManager.Users
+                           .Include(i => i.Replies)
+                           .Include(i => i.Comments)
+                           .Include(i => i.Articles)
+                           .Include(i => i.Saved)
+                           .Include(i => i.Followers)
+                           .Include(i => i.Following)
+                           .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (result == null) throw new UserNullException();
+
+        return _mapper.Map<UserDto>(result);
     }
 }
