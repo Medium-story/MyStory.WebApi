@@ -1,4 +1,5 @@
-﻿using MediumStory.Domain.Entities;
+﻿using AutoMapper.Configuration.Annotations;
+using MediumStory.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,8 @@ public class FileService(IWebHostEnvironment webHostEnvironment,
 
     public void Delete(string fileName)
     {
-        string filePath = "C:\\Users\\sardo\\source\\repos\\MyStory.WebApi\\MyStory.Api\\wwwroot\\" + fileName;
+        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", fileName);
+
         try
         {
             // Faylni o'chirish
@@ -35,13 +37,14 @@ public class FileService(IWebHostEnvironment webHostEnvironment,
         if (images.Contains(extentiton))
         {
             string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", fileName);
+            
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
             }
 
-            returns.Add($"{_configuration.GetValue<string>("HostName")}/images/{fileName}");
+            returns.Add($"{_configuration.GetValue<string>("HostName")}{fileName}");
         }
         else
         {

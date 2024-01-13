@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+/// Jwt configuration
+builder.ConfigureJwtAuth();
+
 /// Swagger Authorization Configuration
 builder.ConfigureSwaggerAuth();
 
