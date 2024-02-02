@@ -14,6 +14,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
 {
     private readonly IArticleService articleService = articleService;
 
+    // Add article
     [HttpPost("add")]
     [Authorize(Roles = "User, Admin, SuperAdmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -31,6 +32,8 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
     }
 
+    
+    //Get all of article
     [HttpGet("get-all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -47,6 +50,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
         }
     }
 
+    //gbi
     [HttpGet("get-by-id")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
