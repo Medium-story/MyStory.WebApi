@@ -42,5 +42,5 @@ public class UserController(IUserService userService) : ControllerBase
             return StatusCode(404, ex.TitleMessage);
         }
     }
-
+// Edit for YOLO Badge
 }
